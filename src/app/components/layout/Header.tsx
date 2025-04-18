@@ -6,7 +6,7 @@ import React, { useEffect, useState } from "react";
 //This Announcement Bar for this page
 const AnnouncementBar = () => {
   return (
-    <div className="w-full bg-gray-600 py-2">
+    <div className="w-full bg-black py-2">
       <div className="container mx-auto flex justify-center items-center px-8">
         <span className="text-center text-sm font-medium tracking-wide text-white">
           FREE SHIPPING ON ORDERS OVER $50.00 | FREE RETURNS
@@ -50,7 +50,7 @@ const Header = () => {
         }`}
       >
         <AnnouncementBar />
-        <div className="w-full flex justify-between items-center py-3 sm:py-4 bg-gray-600 shadow-sm border-b border-gray-100 backdrop-blur-sm">
+        <div className="w-full flex justify-between items-center py-3 sm:py-4 bg-gray-400 shadow-sm border-b border-gray-100 backdrop-blur-sm">
           <div className="flex justify-between items-center container mx-auto px-8">
             <div className="flex flex-1 justify-start items-center gap-4 sm:gap-6">
               <button className="text-white hover:text-gray-900 md:hidden">
