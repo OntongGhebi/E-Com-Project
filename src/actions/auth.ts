@@ -1,3 +1,4 @@
+"use server";
 import {
   encodeBase32LowerCaseNoPadding,
   encodeHexLowerCase,
@@ -5,9 +6,9 @@ import {
 import { sha256 } from "@oslojs/crypto/sha2";
 
 import type { User, Session } from "@/generated/prisma";
+import prisma from "@/lib/prisma";
 import { cookies } from "next/headers";
 import { cache } from "react";
-import prisma from "@/lib/prisma";
 
 export async function generateSessionToken(): Promise<string> {
   const bytes = new Uint8Array(20);
@@ -63,27 +64,24 @@ export async function validateSessionToken(
       },
     });
   }
-  return { session, user };
+
+  const safeUser = {
+    ...user,
+    passwordHash: undefined,
+  };
+
+  return { session, user: safeUser };
 }
 
 export async function invalidateSession(sessionId: string): Promise<void> {
   await prisma.session.delete({ where: { id: sessionId } });
 }
 
-export async function invalidateAllSessions(userId: number): Promise<void> {
-  await prisma.session.deleteMany({
-    where: {
-      userId: userId,
-    },
-  });
-}
-
 export type SessionValidationResult =
-  | { session: Session; user: User }
+  | { session: Session; user: Omit<User, "passwordHash"> }
   | { session: null; user: null };
 
-//Cookies
-
+/* Cookies */
 export async function setSessionTokenCookie(
   token: string,
   expiresAt: Date
@@ -121,8 +119,7 @@ export const getCurrentSession = cache(
   }
 );
 
-//User Registration, Login, Logout
-
+/* User register, login, logout */
 export const hashPassword = async (password: string) => {
   return encodeHexLowerCase(sha256(new TextEncoder().encode(password)));
 };
